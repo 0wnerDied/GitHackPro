@@ -3,17 +3,21 @@
 
 """
 Copyright (c) 2017 BugScan (http://www.bugscan.net)
+Copyright (C) 2024 0wnerDied <z1281552865@gmail.com>
 See the file 'LICENCE' for copying permission
 """
 
 import os
-import urllib2
 import random
+import urllib.error
+import urllib.request
 from lib.common import writeFile
-from lib.data import paths
-from lib.data import target
-from lib.data import agents
-from lib.data import logger
+from lib.data import (
+    paths,
+    target,
+    agents,
+    logger
+)
 from lib.settings import DEBUG
 
 
@@ -25,11 +29,12 @@ def request_data(url):
     for i in range(3):
         data = None
         try:
-            request = urllib2.Request(url, None, {'User-Agent': randomAgent()})
-            data = urllib2.urlopen(request).read()
+            request = urllib.request.Request(url, None, {"User-Agent": randomAgent()})
+            with urllib.request.urlopen(request) as response:
+                data = response.read()
             if data:
                 return data
-        except Exception, e:
+        except Exception as e:
             if DEBUG:
                 logger.warning("Request Exception: %s" % str(e))
     return None
@@ -57,6 +62,10 @@ def isdirlist():
         "objects/",
     ]
     data = request_data(target.TARGET_GIT_URL)
+
+    if isinstance(data, bytes):
+        data = data.decode()
+
     if data:
         for key in keywords:
             if key in data:

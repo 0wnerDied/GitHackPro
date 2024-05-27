@@ -1,20 +1,24 @@
 #!/usr/bin/env python
 # coding:utf-8
+
 """
 Copyright (c) 2017 BugScan (http://www.bugscan.net)
+Copyright (C) 2024 0wnerDied <z1281552865@gmail.com>
 See the file 'LICENCE' for copying permission
 """
 
 import os
 import sys
-from lib.data import paths
-from lib.common import banner
-from lib.common import usage
-from lib.common import setPaths
-from lib.common import initAgents
-from lib.common import initDirs
-from lib.common import checkdepends
+from lib.common import (
+    banner,
+    checkdepends,
+    initAgents,
+    initDirs,
+    setPaths,
+    usage,
+)
 from lib.controler import start
+from lib.data import paths
 
 
 def main():
@@ -33,8 +37,9 @@ def init():
         initAgents()
         initDirs()
         start()
-    except:
-        raise
+    except Exception as e:
+        raise e
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()

@@ -3,26 +3,27 @@
 
 """
 Copyright (c) 2017 BugScan (http://www.bugscan.net)
+Copyright (C) 2024 0wnerDied <z1281552865@gmail.com>
 See the file 'LICENCE' for copying permission
 """
 
-import sys
 import platform
+import sys
 
 
 class LOGGER(object):
     """
-    @desc:   终端颜色输出模块
+    @desc:   Terminal color output module
     @create: 2015/08/17
     """
 
     def __init__(self):
         """
-        @desc: 根据当前系统创建输出函数
+        @desc: Create output function based on the current system
         """
         os_name = platform.uname()[0]
-        self.IS_WIN = os_name == 'Windows'
-        self.IS_MAC = os_name == 'Darwin'
+        self.IS_WIN = os_name == "Windows"
+        self.IS_MAC = os_name == "Darwin"
         # colors
         if self.IS_WIN:
             # Windows
@@ -38,74 +39,74 @@ class LOGGER(object):
             self.YELLOW = 0x0E
         else:
             # Other system(unix)
-            self.RED = '\033[1;31m'
-            self.GREY = '\033[38m'
-            self.BLUE = '\033[1;34m'
-            self.CYAN = '\033[36m'
-            self.LINK = '\033[0;36;4m'
-            self.BLACK = '\033[0m'
-            self.GREEN = '\033[32m'
-            self.WHITE = '\033[37m'
-            self.PURPLE = '\033[35m'
-            self.YELLOW = '\033[33m'
+            self.RED = "\033[1;31m"
+            self.GREY = "\033[38m"
+            self.BLUE = "\033[1;34m"
+            self.CYAN = "\033[36m"
+            self.LINK = "\033[0;36;4m"
+            self.BLACK = "\033[0m"
+            self.GREEN = "\033[32m"
+            self.WHITE = "\033[37m"
+            self.PURPLE = "\033[35m"
+            self.YELLOW = "\033[33m"
         # functions
         self.p = self.win_print if self.IS_WIN else self.os_print
 
     def win_reset(self, color):
         """
-        @desc:  重置终端颜色(for windows)
+        @desc: Reset terminal color (for windows)
         """
         from ctypes import windll
+
         handler = windll.kernel32.GetStdHandle(-11)
         return windll.kernel32.SetConsoleTextAttribute(handler, color)
 
     def win_print(self, msg, color, enter=True):
         """
-        @desc: 彩色输出函数(for windows)
+        @desc: Color output function (for windows)
         """
         color = color or self.BLACK
         self.win_reset(color | color | color)
-        sys.stdout.write(('%s\n' if enter else '%s') % msg)
+        sys.stdout.write(("%s\n" if enter else "%s") % msg)
         self.win_reset(self.RED | self.GREEN | self.BLUE)
         return self
 
     def os_print(self, msg, color, enter=True):
         """
-        @desc: 彩色输出函数(for unix[osx|linux..])
+        @desc: Color output function (for unix[osx|linux..])
         """
         color = color or self.BLACK
-        sys.stdout.write(('%s%s%s\n' if enter else '%s%s%s') %
-                         (color, msg, self.BLACK))
+        sys.stdout.write(("%s%s%s\n" if enter else "%s%s%s") % (color, msg, self.BLACK))
         return self
 
-    def error(self, msg=''):
+    def error(self, msg=""):
         """
-        @desc:  错误信息
-        @param: String{msg} 要输出的文本
+        @desc:  Error message
+        @param: String{msg} Text to output
         """
-        self.p('[!] %s' % msg, self.RED)
+        self.p("[!] %s" % msg, self.RED)
         return self
 
-    def warning(self, msg=''):
+    def warning(self, msg=""):
         """
-        @desc:  警告信息
-        @param: String{msg} 要输出的文本
+        @desc:  Warning message
+        @param: String{msg} Text to output
         """
-        self.p('[-] %s' % msg, self.YELLOW)
+        self.p("[-] %s" % msg, self.YELLOW)
         return self
 
-    def info(self, msg=''):
+    def info(self, msg=""):
         """
-        @desc:  提示信息
-        @param: String{msg} 要输出的文本
+        @desc:  Information message
+        @param: String{msg} Text to output
         """
-        self.p('[*] %s' % msg, self.CYAN)
+        self.p("[*] %s" % msg, self.CYAN)
         return self
 
-    def success(self, msg=''):
+    def success(self, msg=""):
         """
-        @desc:  成功信息
-        @param: String{msg} 要输出的文本
+        @desc:  Success message
+        @param: String{msg} Text to output
         """
-        self.p('[+] %s' % msg, self.GREEN)
+        self.p("[+] %s" % msg, self.GREEN)
         return self

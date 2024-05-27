@@ -3,6 +3,7 @@
 
 """
 Copyright (c) 2017 BugScan (http://www.bugscan.net)
+Copyright (C) 2024 0wnerDied <z1281552865@gmail.com>
 See the file 'LICENCE' for copying permission
 """
 
@@ -11,7 +12,6 @@ import types
 
 
 class AttribDict(dict):
-
     """
     >>> foo = AttribDict()
     >>> foo.bar = 1
@@ -24,7 +24,7 @@ class AttribDict(dict):
             indict = {}
 
         self.attribute = attribute
-        dict.__init__(self, indict)
+        super().__init__(indict)
         self.__initialised = True
 
     def __getattr__(self, item):
@@ -32,46 +32,47 @@ class AttribDict(dict):
         Maps values to attributes
         Only called if there *is NOT* an attribute with this name
         """
-
         try:
-            return self.__getitem__(item)
+            return self[item]
         except KeyError:
-            raise Exception("unable to access item '%s'" % item)
+            raise AttributeError(f"unable to access item '{item}'")
 
     def __setattr__(self, item, value):
         """
         Maps attributes to values
         Only if we are initialised
         """
-
         # This test allows attributes to be set in the __init__ method
         if "_AttribDict__initialised" not in self.__dict__:
-            return dict.__setattr__(self, item, value)
+            super().__setattr__(item, value)
 
         # Any normal attributes are handled normally
         elif item in self.__dict__:
-            dict.__setattr__(self, item, value)
+            super().__setattr__(item, value)
 
         else:
-            self.__setitem__(item, value)
+            self[item] = value
 
     def __getstate__(self):
         return self.__dict__
 
-    def __setstate__(self, dict):
-        self.__dict__ = dict
+    def __setstate__(self, state):
+        self.__dict__ = state
 
     def __deepcopy__(self, memo):
         retVal = self.__class__()
         memo[id(self)] = retVal
 
         for attr in dir(self):
-            if not attr.startswith('_'):
+            if not attr.startswith("_"):
                 value = getattr(self, attr)
-                if not isinstance(value, (types.BuiltinFunctionType, types.FunctionType, types.MethodType)):
+                if not isinstance(
+                    value,
+                    (types.BuiltinFunctionType, types.FunctionType, types.MethodType),
+                ):
                     setattr(retVal, attr, copy.deepcopy(value, memo))
 
         for key, value in self.items():
-            retVal.__setitem__(key, copy.deepcopy(value, memo))
+            retVal[key] = copy.deepcopy(value, memo)
 
         return retVal
