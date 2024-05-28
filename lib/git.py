@@ -304,7 +304,7 @@ def cache_objects():
 def parse_index(filename, pretty=True):
     """
     Analyze the index
-    https://github.com/git/git/blob/master/Documentation/technical/index-format.txt
+    https://github.com/git/git/blob/master/Documentation/gitformat-index.txt
     """
     with open(filename, "rb") as o:
         f = mmap.mmap(o.fileno(), 0, access=mmap.ACCESS_READ)
