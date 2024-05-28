@@ -7,4 +7,4 @@ See the file 'LICENCE' for copying permission
 """
 
 __title__ = 'githack'
-__version__ = '0.0.5'
+__version__ = '1.0.0'
