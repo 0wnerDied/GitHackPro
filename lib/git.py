@@ -35,6 +35,11 @@ from lib.settings import DEBUG
 
 def init():
     logger.info("Initialize Git")
+    cmd = ["git", "config", "--global", "init.defaultBranch", "master"]
+    ret = subprocess.call(cmd)
+    if ret != 0:
+        logger.warning("Configure Error")
+        return False
     process = subprocess.Popen(
         ["git", "init", paths.GITHACK_DIST_TARGET_PATH],
         stdout=subprocess.PIPE,
